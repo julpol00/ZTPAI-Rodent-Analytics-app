@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* small custom styles inspired by provided CSS */
+body { font-family: 'Montserrat', sans-serif; }
+.card-image { object-fit: cover; }
