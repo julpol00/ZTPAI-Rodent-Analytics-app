@@ -21,6 +21,9 @@ async function seed() {
 
   // users
   await User.create({ id:1, email: 'demo@example.com', password: '$2y$10$abcdefghijklmnopqrstuv.DemoHashHashHashHash', name: 'Demo', surname: 'User', role_id: 2 });
+  const bcrypt = require('bcryptjs');
+  const pw = bcrypt.hashSync('password', 10);
+  await User.create({ id:2, email: 'test@example.com', password: pw, name: 'Test', surname: 'User', role_id: 2 });
 
   // animals
   await Animal.create({ id:1, id_user:1, name:'DemoRodent', species:'DemoSpecies', birth:'2024-01-01', description:'This is a demo rodent', avatar:'demo.png' });
