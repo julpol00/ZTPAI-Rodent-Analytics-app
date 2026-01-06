@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const menu = [
-  { label: 'ANIMALS', icon: 'fa-paw', route: '/animals' },
+  { label: 'ANIMALS', icon: 'fa-paw', route: '/dashboard' },
   { label: 'ANALYSIS', icon: 'fa-chart-simple', route: '/analysis' },
-  { label: 'NOTIFICATION', icon: 'fa-bell', route: '/notification' },
+  { label: 'NOTIFICATION', icon: 'fa-bell', route: '/notifications' },
   { label: 'SETTINGS', icon: 'fa-gears', route: '/settings', bottom: true },
-];
+]
 
 export default function AddAnimal() {
 
@@ -61,7 +61,7 @@ export default function AddAnimal() {
               <li key={item.label}>
                 <button
                   className="w-full flex items-center gap-3 px-5 py-4 rounded-xl bg-white/10 hover:bg-white/20 transition font-bold text-lg tracking-wide"
-                  onClick={()=>item.label === 'ANIMALS' ? navigate('/dashboard') : navigate(item.route)}
+                  onClick={()=>navigate(item.route)}
                 >
                   <i className={`fa-solid ${item.icon} text-2xl`} />
                   {item.label}
