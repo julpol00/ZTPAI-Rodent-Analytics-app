@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 const menu = [
@@ -15,12 +15,17 @@ export default function Dashboard(){
     navigate('/login')
   }
 
-  // example images of animals
-  const animals = [
-    { id: 1, name: 'Szynszyl', avatar: 'szynszyl.jpg' },
-    { id: 2, name: 'Suseł', avatar: 'suseł.jpg' },
-    { id: 3, name: 'Rat', avatar: 'rat.jpg' }
-  ]
+
+  const [animals, setAnimals] = useState([])
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (!token) return
+    import('../api').then(({ fetchAnimals }) => {
+      fetchAnimals(token)
+        .then(res => setAnimals(res.data))
+        .catch(() => setAnimals([]))
+    })
+  }, [])
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-300 to-purple-800 font-sans flex flex-col">

@@ -27,6 +27,8 @@ async function seed() {
 
   // animals
   await Animal.create({ id:1, id_user:1, name:'DemoRodent', species:'DemoSpecies', birth:'2024-01-01', description:'This is a demo rodent', avatar:'demo.png' });
+  await Animal.create({ id:2, id_user:2, name:'Rufus', species:'Hamster', birth:'2023-05-10', description:'Rufus the hamster', avatar:'campbella-chomik.png' });
+  await Animal.create({ id:3, id_user:2, name:'Miki', species:'Rat', birth:'2022-11-20', description:'Miki the rat', avatar:'rat.jpg' });
 
   // activities
   await Activity.create({ id:1, animal_id:1, activity_date:'2025-01-01', start_time:'08:00:00', end_time:'09:00:00', activity_text:'Test activity' });
