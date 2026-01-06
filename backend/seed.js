@@ -37,7 +37,15 @@ async function seed() {
   await Weight.create({ id:1, animal_id:1, date_weight:'2025-01-02', weight:100.00 });
 
   // notifications
-  await Notification.create({ id:1, animal_id:1, notification_time:'12:00:00', notification_message:'Test notification', repeat:'NO_REPEAT' });
+  await Notification.create({
+    id: 1,
+    animal_id: 1,
+    notification_time: '12:00:00',
+    notification_message: 'Test notification',
+    repeat: 'NO_REPEAT',
+    notification_date: '2026-01-07',
+    notification_weekday: 'Tuesday'
+  });
 
   console.log('Seed complete');
   process.exit(0);

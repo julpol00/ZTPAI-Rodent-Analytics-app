@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { fetchNotifications } from '../api'
 import { useNavigate } from 'react-router-dom'
 
 const menu = [
@@ -16,16 +17,15 @@ export default function Notifications() {
     navigate('/login')
   }
 
-  // Example notifications
-  // Example notifications with date/weekday
-  const notifications = [
-    { time: '08:00', message: 'Feed the animal', repeat: 'Repeat daily' },
-    { time: '12:00', message: 'Clean the cage', repeat: 'No repeat', date: '2026-01-10' },
-    { time: '18:00', message: 'Change water', repeat: 'Repeat weekly', weekday: 'Friday' },
-    { time: '18:00', message: 'Change water', repeat: 'Repeat weekly', weekday: 'Friday' },
-    { time: '18:00', message: 'Change water', repeat: 'Repeat weekly', weekday: 'Friday' },
-    { time: '18:00', message: 'Change water', repeat: 'Repeat weekly', weekday: 'Friday' },
-  ]
+  const [notifications, setNotifications] = useState([])
+
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (!token) return
+    fetchNotifications(token)
+      .then(res => setNotifications(res.data))
+      .catch(() => setNotifications([]))
+  }, [])
 
   // Form state
   const [form, setForm] = useState({
@@ -193,9 +193,9 @@ export default function Notifications() {
                     scrollbarWidth: 'thin',
                   }}
                 >
-                  {notifications.map((n, idx) => (
+                  {notifications.map((n) => (
                     <div
-                      key={idx}
+                      key={n.id}
                       className="note relative flex flex-col gap-2 mb-6 p-5 rounded-xl border border-purple-300 bg-gradient-to-br from-purple-100 via-white to-purple-200 transition-all duration-200"
                       style={{ boxShadow: '0 8px 32px 0 rgba(93,46,140,0.32)' }}
                       onMouseEnter={e => {
@@ -216,15 +216,15 @@ export default function Notifications() {
                         <i className="fa-solid fa-trash text-lg" />
                       </button>
                       <div className="flex items-center gap-3">
-                        <span className="note-time text-purple-800 font-bold text-lg">{n.time}</span>
-                        {n.repeat === 'No repeat' && n.date && (
-                          <span className="note-date text-teal-700 font-semibold text-lg">{n.date}</span>
+                        <span className="note-time text-purple-800 font-bold text-lg">{n.notification_time}</span>
+                        {n.repeat === 'NO_REPEAT' && n.notification_date && (
+                          <span className="note-date text-teal-700 font-semibold text-lg">{n.notification_date}</span>
                         )}
-                        {n.repeat === 'Repeat weekly' && n.weekday && (
-                          <span className="note-weekday text-teal-700 font-semibold text-lg">{n.weekday}</span>
+                        {n.repeat === 'REPEAT_WEEKLY' && n.notification_weekday && (
+                          <span className="note-weekday text-teal-700 font-semibold text-lg">{n.notification_weekday}</span>
                         )}
                       </div>
-                      <div className="note-text text-gray-700">{n.message}</div>
+                      <div className="note-text text-gray-700">{n.notification_message}</div>
                       <div className="repeat-info text-purple-800 font-bold text-base">{n.repeat}</div>
                     </div>
                   ))}
