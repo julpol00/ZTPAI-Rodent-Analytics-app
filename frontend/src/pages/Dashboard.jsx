@@ -74,7 +74,10 @@ export default function Dashboard(){
               </div>
             ))}
             {/* Add animal card */}
-            <div className="card-add-animals w-[19em] h-[22em] rounded-2xl bg-white shadow-lg flex flex-col items-center justify-center border-4 border-[var(--primary-purple)] cursor-pointer hover:scale-[1.02] transition relative">
+            <div
+              className="card-add-animals w-[19em] h-[22em] rounded-2xl bg-white shadow-lg flex flex-col items-center justify-center border-4 border-[var(--primary-purple)] cursor-pointer hover:scale-[1.02] transition relative"
+              onClick={() => navigate('/add-animal')}
+            >
               <i className="fa-solid fa-plus text-[7em] text-[var(--primary-purple)] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
             </div>
           </section>

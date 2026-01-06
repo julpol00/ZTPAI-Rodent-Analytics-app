@@ -1,0 +1,91 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
+const menu = [
+  { label: 'ANIMALS', icon: 'fa-paw', route: '/animals' },
+  { label: 'ANALYSIS', icon: 'fa-chart-simple', route: '/analysis' },
+  { label: 'NOTIFICATION', icon: 'fa-bell', route: '/notification' },
+  { label: 'SETTINGS', icon: 'fa-gears', route: '/settings', bottom: true },
+];
+
+export default function AddAnimal() {
+  const navigate = useNavigate();
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-slate-300 to-purple-800 font-sans flex flex-col">
+      <header className="bg-white py-4 px-6 flex justify-center items-center shadow flex-shrink-0 relative" style={{minHeight:'4.5rem'}}>
+        <div className="flex flex-col items-center w-full">
+          <div className="flex items-center justify-center gap-4">
+            <img src="/img/logo_2.svg" alt="logo" className="h-16" />
+            <div className="text-4xl font-black text-purple-800 tracking-wider">Rodent Analytics</div>
+          </div>
+        </div>
+        <button onClick={() => { localStorage.removeItem('token'); navigate('/login'); }} className="absolute right-8 top-1/2 -translate-y-1/2 text-base text-[var(--primary-purple)] border border-[var(--primary-purple)] px-5 py-2 rounded font-bold">LOG OUT</button>
+      </header>
+      <div className="flex flex-1 min-h-0 h-0" style={{minHeight: '0', height: '100%'}}>
+        {/* Sidebar */}
+        <nav className="w-64 bg-[var(--primary-purple)] text-white flex flex-col px-6 py-6 overflow-y-auto flex-shrink-0 h-screen min-h-screen">
+          <ul className="flex flex-col gap-5">
+            {menu.filter(m=>!m.bottom).map(item => (
+              <li key={item.label}>
+                <button className="w-full flex items-center gap-3 px-5 py-4 rounded-xl bg-white/10 hover:bg-white/20 transition font-bold text-lg tracking-wide"
+                  onClick={()=>navigate(item.route)}>
+                  <i className={`fa-solid ${item.icon} text-2xl`} />
+                  {item.label}
+                </button>
+              </li>
+            ))}
+            {menu.filter(m=>m.bottom).map(item => (
+              <li key={item.label}>
+                <button className="w-full flex items-center gap-3 px-5 py-4 rounded-xl bg-white/10 hover:bg-white/20 transition font-bold text-lg tracking-wide"
+                  onClick={()=>navigate(item.route)}>
+                  <i className={`fa-solid ${item.icon} text-2xl`} />
+                  {item.label}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        {/* Main content */}
+        <main className="flex-1 flex flex-col items-center justify-start overflow-x-auto mt-32">
+          <form className="flex flex-row gap-16 items-stretch bg-white rounded-2xl shadow-lg p-8 max-w-4xl w-full min-h-[400px] h-[50vh]">
+            {/* Photo section */}
+            <div
+              className="flex flex-col justify-center items-center w-64 bg-white border-2 border-[#a3bebd] rounded-xl cursor-pointer"
+              onClick={() => document.getElementById('photo-input')?.click()}
+            >
+              <button
+                type="button"
+                className="text-[6rem] text-[#a3bebd] bg-none border-none cursor-pointer transition-colors duration-300 hover:text-white hover:bg-[#6a2a91] w-full h-full flex items-center justify-center rounded-xl"
+                tabIndex={-1}
+              >
+                +
+              </button>
+              <input
+                id="photo-input"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                tabIndex={-1}
+              />
+            </div>
+            {/* Form section */}
+            <div className="flex flex-col justify-start items-center w-[28rem] min-h-full">
+              <div className="flex flex-col gap-4 w-full">
+                <input type="text" name="name" placeholder="name" className="h-10 w-full rounded-xl border-2 border-[#a3bebd] bg-white text-center font-bold text-[#6a2a91] text-base shadow focus:outline-none focus:border-[#6a2a91] placeholder-[#a3bebd] placeholder:font-semibold" />
+                <input type="text" name="species" placeholder="species" className="h-10 w-full rounded-xl border-2 border-[#a3bebd] bg-white text-center font-bold text-[#6a2a91] text-base shadow focus:outline-none focus:border-[#6a2a91] placeholder-[#a3bebd] placeholder:font-semibold" />
+                <input type="text" name="birth" placeholder="birth" className="h-10 w-full rounded-xl border-2 border-[#a3bebd] bg-white text-center font-bold text-[#6a2a91] text-base shadow focus:outline-none focus:border-[#6a2a91] placeholder-[#a3bebd] placeholder:font-semibold" />
+              </div>
+              <textarea placeholder="add notes" name="notes" className="min-h-[120px] mt-4 border-2 border-[#a3bebd] rounded-xl bg-white font-bold text-[#6a2a91] text-base text-center w-full shadow focus:outline-none focus:border-[#6a2a91] placeholder-[#a3bebd] placeholder:font-bold"></textarea>
+              <div className="flex flex-col justify-end h-full mt-4 w-full">
+                <button className="bg-[#5d2e8c] text-[#a3bebd] px-6 py-2 rounded-xl border-none font-bold shadow cursor-pointer tracking-wider h-10 transition-colors duration-300 hover:bg-[#5123a8]">SAVE</button>
+              </div>
+            </div>
+          </form>
+        </main>
+      </div>
+      {/* FontAwesome CDN */}
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    </div>
+  );
+}
