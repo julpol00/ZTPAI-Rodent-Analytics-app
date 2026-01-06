@@ -5,3 +5,15 @@
 /* small custom styles inspired by provided CSS */
 body { font-family: 'Montserrat', sans-serif; }
 .card-image { object-fit: cover; }
+
+/* Colors mapping from original CSS */
+:root{
+	--primary-purple:#6a2a91;
+	--accent-teal:#6fb6af;
+}
+
+.login-left{ background: linear-gradient(180deg, rgba(118,134,166,1) 46%, rgba(93,46,140,1) 100%); }
+.logo-img{ max-width: 80%; margin: 0 auto; display: block }
+.btn-primary{ background-color: var(--primary-purple); color: #fff }
+.btn-primary:hover{ background-color: #5123a8 }
+
