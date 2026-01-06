@@ -44,8 +44,10 @@ export default function Dashboard(){
           <ul className="flex flex-col gap-5">
             {menu.filter(m=>!m.bottom).map(item => (
               <li key={item.label}>
-                <button className="w-full flex items-center gap-3 px-5 py-4 rounded-xl bg-white/10 hover:bg-white/20 transition font-bold text-lg tracking-wide"
-                  onClick={()=>navigate(item.route)}>
+                <button
+                  className="w-full flex items-center gap-3 px-5 py-4 rounded-xl bg-white/10 hover:bg-white/20 transition font-bold text-lg tracking-wide"
+                  onClick={()=>item.label === 'ANIMALS' ? navigate('/dashboard') : navigate(item.route)}
+                >
                   <i className={`fa-solid ${item.icon} text-2xl`} />
                   {item.label}
                 </button>

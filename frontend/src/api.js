@@ -9,4 +9,20 @@ export const me = (token) => api.get('/auth/me', { headers: { Authorization: `Be
 export const fetchAnimals = (token) =>
 	api.get('/animals', { headers: { Authorization: `Bearer ${token}` } })
 
+
+export const addAnimal = (token, data) => {
+	const formData = new FormData();
+	formData.append('name', data.name);
+	formData.append('species', data.species);
+	formData.append('birth', data.birth);
+	formData.append('notes', data.notes);
+	if (data.photo) formData.append('photo', data.photo);
+	return api.post('/animals', formData, {
+		headers: {
+			Authorization: `Bearer ${token}`,
+			'Content-Type': 'multipart/form-data',
+		},
+	});
+};
+
 export default api
