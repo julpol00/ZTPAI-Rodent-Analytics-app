@@ -22,6 +22,9 @@ export default function Notifications() {
     { time: '08:00', message: 'Feed the animal', repeat: 'Repeat daily' },
     { time: '12:00', message: 'Clean the cage', repeat: 'No repeat', date: '2026-01-10' },
     { time: '18:00', message: 'Change water', repeat: 'Repeat weekly', weekday: 'Friday' },
+    { time: '18:00', message: 'Change water', repeat: 'Repeat weekly', weekday: 'Friday' },
+    { time: '18:00', message: 'Change water', repeat: 'Repeat weekly', weekday: 'Friday' },
+    { time: '18:00', message: 'Change water', repeat: 'Repeat weekly', weekday: 'Friday' },
   ]
 
   // Form state
@@ -181,7 +184,15 @@ export default function Notifications() {
               {/* Right: Notifications list */}
               <div className="bg-white rounded-lg shadow-md p-6 flex flex-col justify-start">
                 <h2 className="text-purple-800 font-bold text-xl mb-4">Your Notifications</h2>
-                <div className="notes-list">
+                <div
+                  className="notes-list"
+                  style={{
+                    maxHeight: '28em', // fits ~4-5 notifications
+                    overflowY: 'auto',
+                    paddingRight: '0.5em',
+                    scrollbarWidth: 'thin',
+                  }}
+                >
                   {notifications.map((n, idx) => (
                     <div
                       key={idx}
