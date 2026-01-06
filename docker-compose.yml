@@ -35,6 +35,7 @@ services:
         condition: service_healthy
     volumes:
       - ./backend:/app
+      - ./frontend/public/img/uploads:/frontend/public/img/uploads
     working_dir: /app
     command: npm run dev -- --host
 
