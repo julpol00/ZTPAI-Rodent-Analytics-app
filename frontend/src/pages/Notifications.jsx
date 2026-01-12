@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react'
-import { fetchNotifications } from '../api'
+import { fetchNotifications, fetchAnimals } from '../api'
 import { useNavigate } from 'react-router-dom'
 
 const menu = [
@@ -18,6 +18,7 @@ export default function Notifications() {
   }
 
   const [notifications, setNotifications] = useState([])
+  const [animals, setAnimals] = useState([])
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -25,10 +26,14 @@ export default function Notifications() {
     fetchNotifications(token)
       .then(res => setNotifications(res.data))
       .catch(() => setNotifications([]))
+    fetchAnimals(token)
+      .then(res => setAnimals(res.data))
+      .catch(() => setAnimals([]))
   }, [])
 
   // Form state
   const [form, setForm] = useState({
+    animal_id: '',
     time: '00:00',
     message: '',
     daily: false,
@@ -99,6 +104,21 @@ export default function Notifications() {
                 <form className="notification-form flex flex-col items-start w-full gap-6 font-sans">
                   <div className="note-form flex flex-col gap-4 w-full">
                     <div className="inputs flex flex-row gap-4">
+                      <div className="flex flex-col">
+                        <label className="text-purple-800 font-bold mb-1 text-base">Animal</label>
+                        <select
+                          name="animal_id"
+                          required
+                          value={form.animal_id}
+                          onChange={handleChange}
+                          className="border-2 border-purple-300 rounded-lg px-3 py-2 text-purple-900 font-semibold focus:outline-none focus:border-purple-500 bg-purple-50"
+                        >
+                          <option value="">Select animal</option>
+                          {animals.map(a => (
+                            <option key={a.id} value={a.id}>{a.name}</option>
+                          ))}
+                        </select>
+                      </div>
                       <div className="flex flex-col">
                         <label className="text-purple-800 font-bold mb-1 text-base">Time</label>
                         <input
@@ -216,16 +236,23 @@ export default function Notifications() {
                         <i className="fa-solid fa-trash text-lg" />
                       </button>
                       <div className="flex items-center gap-3">
-                        <span className="note-time text-purple-800 font-bold text-lg">{n.notification_time}</span>
-                        {n.repeat === 'NO_REPEAT' && n.notification_date && (
+                        <span className="note-time text-purple-800 font-bold text-lg">{n.notification_time.slice(0,5)}</span>
+                        {n.repeat === 'no_repeat' && n.notification_date && (
                           <span className="note-date text-teal-700 font-semibold text-lg">{n.notification_date}</span>
                         )}
-                        {n.repeat === 'REPEAT_WEEKLY' && n.notification_weekday && (
+                        {n.repeat === 'repeat_weekly' && n.notification_weekday && (
                           <span className="note-weekday text-teal-700 font-semibold text-lg">{n.notification_weekday}</span>
                         )}
                       </div>
+                      {n.Animal && n.Animal.name && (
+                        <div className="animal-name text-purple-800 font-bold text-lg mb-1">{n.Animal.name}</div>
+                      )}
                       <div className="note-text text-gray-700">{n.notification_message}</div>
-                      <div className="repeat-info text-purple-800 font-bold text-base">{n.repeat}</div>
+                      <div className="repeat-info text-purple-800 font-bold text-base">
+                        {n.repeat === 'no_repeat' && 'No repeat'}
+                        {n.repeat === 'repeat_daily' && 'Daily repeat'}
+                        {n.repeat === 'repeat_weekly' && 'Weekly repeat'}
+                      </div>
                     </div>
                   ))}
                 </div>

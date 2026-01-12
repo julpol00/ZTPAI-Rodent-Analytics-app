@@ -39,12 +39,30 @@ async function seed() {
   // notifications
   await Notification.create({
     id: 1,
-    animal_id: 1,
+    animal_id: 2,
     notification_time: '12:00:00',
-    notification_message: 'Test notification',
-    repeat: 'NO_REPEAT',
+    notification_message: 'No repeat notification',
+    repeat: 'no_repeat',
     notification_date: '2026-01-07',
-    notification_weekday: 'Tuesday'
+    notification_weekday: null
+  });
+  await Notification.create({
+    id: 2,
+    animal_id: 1,
+    notification_time: '08:30:00',
+    notification_message: 'Daily repeat notification',
+    repeat: 'repeat_daily',
+    notification_date: '2026-01-08',
+    notification_weekday: null
+  });
+  await Notification.create({
+    id: 3,
+    animal_id: 3,
+    notification_time: '15:45:00',
+    notification_message: 'Weekly repeat notification',
+    repeat: 'repeat_weekly',
+    notification_date: null,
+    notification_weekday: 'Friday'
   });
 
   console.log('Seed complete');
