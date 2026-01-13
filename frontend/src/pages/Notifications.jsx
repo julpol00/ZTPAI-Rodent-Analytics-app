@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react'
-import { fetchNotifications, fetchAnimals } from '../api'
+import { fetchNotifications, fetchAnimals, addNotification, deleteNotification } from '../api'
 import { useNavigate } from 'react-router-dom'
 
 const menu = [
@@ -57,6 +57,48 @@ export default function Notifications() {
     if (name === 'weekly' && !checked && !form.daily) setForm(f => ({ ...f, weekday: '' }))
   }
 
+  // Obsługa dodawania powiadomienia
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    let repeat = 'no_repeat';
+    let notification_date = null;
+    let notification_weekday = null;
+    if (form.daily) repeat = 'repeat_daily';
+    if (form.weekly) repeat = 'repeat_weekly';
+    if (!form.daily && !form.weekly) notification_date = form.date;
+    if (form.weekly) notification_weekday = form.weekday;
+    const payload = {
+      animal_id: form.animal_id,
+      notification_time: form.time,
+      notification_message: form.message,
+      repeat,
+      notification_date,
+      notification_weekday
+    };
+    try {
+      await addNotification(token, payload);
+      setForm({ animal_id: '', time: '00:00', message: '', daily: false, weekly: false, date: '', weekday: '' });
+      // Odśwież listę powiadomień
+      const res = await fetchNotifications(token);
+      setNotifications(res.data);
+    } catch (err) {
+      alert('Error adding notification');
+    }
+  }
+
+  // Obsługa usuwania powiadomienia
+  async function handleDelete(id) {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    try {
+      await deleteNotification(token, id);
+      setNotifications(notifications.filter(n => n.id !== id));
+    } catch (err) {
+      alert('Error deleting notification');
+    }
+  }
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-300 to-purple-800 font-sans flex flex-col">
       <header className="bg-white py-4 px-6 flex justify-center items-center shadow flex-shrink-0 relative" style={{minHeight:'4.5rem'}}>
@@ -101,7 +143,7 @@ export default function Notifications() {
               {/* Left: Add notification form */}
               <div className="bg-white rounded-lg shadow-md p-6 flex flex-col justify-start">
                 <h2 className="text-purple-800 font-bold text-xl mb-4">Add Notification</h2>
-                <form className="notification-form flex flex-col items-start w-full gap-6 font-sans">
+                <form className="notification-form flex flex-col items-start w-full gap-6 font-sans" onSubmit={handleSubmit}>
                   <div className="note-form flex flex-col gap-4 w-full">
                     <div className="inputs flex flex-row gap-4">
                       <div className="flex flex-col">
@@ -230,7 +272,7 @@ export default function Notifications() {
                       <button
                         className="absolute top-3 right-3 text-purple-700 hover:text-red-500 transition"
                         title="Delete notification"
-                        // onClick={() => handleDelete(n.id)}
+                        onClick={() => handleDelete(n.id)}
                         style={{ background: 'none', border: 'none', padding: 0, boxShadow: 'none' }}
                       >
                         <i className="fa-solid fa-trash text-lg" />

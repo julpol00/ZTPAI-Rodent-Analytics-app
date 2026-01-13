@@ -34,3 +34,17 @@ exports.createNotification = async (req, res) => {
     res.status(500).json({ error: err.message || 'Server error', details: err });
   }
 };
+
+  exports.deleteNotification = async (req, res) => {
+    const { id } = req.params;
+    try {
+      const deleted = await Notification.destroy({ where: { id } });
+      if (deleted) {
+        res.status(204).send();
+      } else {
+        res.status(404).json({ error: 'Notification not found.' });
+      }
+    } catch (err) {
+      res.status(500).json({ error: err.message || 'Server error', details: err });
+    }
+  };

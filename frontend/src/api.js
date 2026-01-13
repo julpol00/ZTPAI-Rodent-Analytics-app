@@ -1,5 +1,11 @@
 export const fetchNotifications = (token) =>
 	api.get('/notifications', { headers: { Authorization: `Bearer ${token}` } });
+
+export const addNotification = (token, data) =>
+	api.post('/notifications', data, { headers: { Authorization: `Bearer ${token}` } });
+
+export const deleteNotification = (token, id) =>
+	api.delete(`/notifications/${id}`, { headers: { Authorization: `Bearer ${token}` } });
 import axios from 'axios'
 
 const api = axios.create({ baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3001/api' })
