@@ -68,7 +68,11 @@ export default function Dashboard(){
         <main className="flex-1 flex flex-col items-center overflow-x-auto">
           <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 pt-16 pb-8 px-4 max-w-6xl w-full">
             {animals.map(animal => (
-              <div key={animal.id} className="card w-[19em] h-[22em] rounded-2xl bg-white shadow-lg flex flex-col overflow-hidden hover:scale-[1.02] transition">
+              <div
+                key={animal.id}
+                className="card w-[19em] h-[22em] rounded-2xl bg-white shadow-lg flex flex-col overflow-hidden hover:scale-[1.02] transition cursor-pointer"
+                onClick={() => navigate(`/pet/${animal.id}`)}
+              >
                 <div className="card-header bg-[var(--primary-purple)] py-4 text-center">
                   <div className="card-title font-black text-2xl text-white tracking-wider">{animal.name}</div>
                 </div>

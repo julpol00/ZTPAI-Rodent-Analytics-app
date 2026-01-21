@@ -5,6 +5,7 @@ import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import AddAnimal from './pages/AddAnimal'
 import Notifications from './pages/Notifications'
+import PetJournal from './pages/PetJournal'
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token')
@@ -19,6 +20,7 @@ export default function App(){
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
       <Route path="/add-animal" element={<ProtectedRoute><AddAnimal/></ProtectedRoute>} />
       <Route path="/notifications" element={<ProtectedRoute><Notifications/></ProtectedRoute>} />
+      <Route path="/pet/:animalId" element={<ProtectedRoute><PetJournal/></ProtectedRoute>} />
       <Route path="/" element={<Navigate to="/login" replace />} />
     </Routes>
   )
