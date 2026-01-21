@@ -31,10 +31,10 @@ async function seed() {
   await Animal.create({ id:3, id_user:2, name:'Miki', species:'Rat', birth:'2022-11-20', description:'Miki the rat', avatar:'rat.jpg' });
 
   // activities
-  await Activity.create({ id:1, animal_id:1, activity_date:'2025-01-01', start_time:'08:00:00', end_time:'09:00:00', activity_text:'Test activity' });
+  await Activity.create({ id:1, animal_id:2, activity_date:'2026-01-01', start_time:'08:00:00', end_time:'09:00:00', activity_text:'Test activity' });
 
   // weights
-  await Weight.create({ id:1, animal_id:1, date_weight:'2025-01-02', weight:100.00 });
+  await Weight.create({ id:1, animal_id:2, date_weight:'2026-01-01', weight:100.00 });
 
   // notifications
   await Notification.create({

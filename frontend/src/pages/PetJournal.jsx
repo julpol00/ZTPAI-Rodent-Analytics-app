@@ -1,61 +1,106 @@
+
 import React, { useEffect, useState } from 'react';
+  // Usuwanie aktywności
+  const handleDeleteActivity = async (activityId) => {
+    try {
+      await api.delete(`/animals/${animalId}/activities/${activityId}`, { headers: { Authorization: `Bearer ${token}` } });
+      setActivities((prev) => prev.filter((a) => a.id !== activityId));
+    } catch (err) {
+      alert('Błąd podczas usuwania aktywności.');
+    }
+  };
+
+  // Usuwanie rekordu wagi
+  const handleDeleteWeight = async (weightId) => {
+    try {
+      await api.delete(`/animals/${animalId}/weight/${weightId}`, { headers: { Authorization: `Bearer ${token}` } });
+      setWeight(null);
+    } catch (err) {
+      alert('Błąd podczas usuwania rekordu wagi.');
+    }
+  };
 import { useParams, useNavigate } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import '../index.css'; // Tailwind + custom styles
-
-// TODO: podłącz do backendu
-// import { fetchAnimalById, fetchWeightByDate, fetchActivitiesByDate, addWeight, addActivity } from '../api';
+import '../index.css';
+import api from '../api';
 
 export default function PetJournal() {
   const { animalId } = useParams();
   const navigate = useNavigate();
   const [animal, setAnimal] = useState(null);
   const [date, setDate] = useState(new Date());
-  const [weight, setWeight] = useState('');
+  const [weight, setWeight] = useState(null);
   const [activities, setActivities] = useState([]);
   const [activityForm, setActivityForm] = useState({ start: '00:00', end: '00:00', text: '' });
+  const [weightForm, setWeightForm] = useState('');
   const [weightLoading, setWeightLoading] = useState(false);
+    // Dodawanie wagi
+    const handleWeightSubmit = async (e) => {
+      e.preventDefault();
+      setWeightLoading(true);
+      try {
+        const dateStr = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+        await api.post(`/animals/${animalId}/weight`, {
+          date_weight: dateStr,
+          weight: weightForm
+        }, { headers: { Authorization: `Bearer ${token}` } });
+        // reload weight
+        const res = await api.get(`/animals/${animalId}/weight?date=${dateStr}`, { headers: { Authorization: `Bearer ${token}` } });
+        setWeight(res.data);
+        setWeightForm('');
+      } catch {
+        // obsługa błędu
+      }
+      setWeightLoading(false);
+    };
   const [activityLoading, setActivityLoading] = useState(false);
 
-  // Mock danych - do podmiany na API
+  // Pobierz token z localStorage
+  const token = localStorage.getItem('token');
+
+  // Pobierz dane zwierzaka
   useEffect(() => {
-    // fetchAnimalById(animalId).then(setAnimal)
-    setAnimal({
-      id: animalId,
-      name: 'Rufus',
-      species: 'Hamster',
-      birth: '2023-12-02',
-      avatar: 'rat.jpg',
-      description: 'This is Hamster Rufus. He likes running in wheel.'
-    });
-  }, [animalId]);
+    if (!token || !animalId) return;
+    api.get(`/animals`, { headers: { Authorization: `Bearer ${token}` } })
+      .then(res => {
+        const found = res.data.find(a => String(a.id) === String(animalId));
+        setAnimal(found || null);
+      })
+      .catch(() => setAnimal(null));
+  }, [animalId, token]);
 
+  // Pobierz wagę i aktywności na wybrany dzień
   useEffect(() => {
-    // fetchWeightByDate(animalId, date)
-    setWeight('');
-    // fetchActivitiesByDate(animalId, date)
-    setActivities([
-      // przykładowe dane
-      // { start: '10:00', end: '12:00', text: 'playing' },
-      // { start: '12:00', end: '18:00', text: 'sleeping' },
-    ]);
-  }, [animalId, date]);
+    if (!token || !animalId) return;
+    const dateStr = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+    api.get(`/animals/${animalId}/weight?date=${dateStr}`, { headers: { Authorization: `Bearer ${token}` } })
+      .then(res => { console.log('weight', res.data); setWeight(res.data); })
+      .catch(err => { console.log('weight error', err); setWeight(null); });
+    api.get(`/animals/${animalId}/activities?date=${dateStr}`, { headers: { Authorization: `Bearer ${token}` } })
+      .then(res => { console.log('activities', res.data); setActivities(res.data); })
+      .catch(err => { console.log('activities error', err); setActivities([]); });
+  }, [animalId, date, token]);
 
-  const handleWeightSubmit = async (e) => {
-    e.preventDefault();
-    setWeightLoading(true);
-    // await addWeight(animalId, date, weight)
-    setWeightLoading(false);
-    // reload weight if needed
-  };
-
+  // Dodawanie aktywności
   const handleActivitySubmit = async (e) => {
     e.preventDefault();
     setActivityLoading(true);
-    // await addActivity(animalId, date, activityForm)
-    setActivities([...activities, { ...activityForm }]);
-    setActivityForm({ start: '00:00', end: '00:00', text: '' });
+    try {
+      const dateStr = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+      await api.post(`/animals/${animalId}/activities`, {
+        activity_date: dateStr,
+        start_time: activityForm.start,
+        end_time: activityForm.end,
+        activity_text: activityForm.text
+      }, { headers: { Authorization: `Bearer ${token}` } });
+      // reload activities
+      const res = await api.get(`/animals/${animalId}/activities?date=${dateStr}`, { headers: { Authorization: `Bearer ${token}` } });
+      setActivities(res.data);
+      setActivityForm({ start: '00:00', end: '00:00', text: '' });
+    } catch {
+      // obsługa błędu
+    }
     setActivityLoading(false);
   };
 
@@ -105,23 +150,40 @@ export default function PetJournal() {
               <div className="flex flex-col items-center w-[440px] flex-shrink-0 px-2">
                 {/* Wybrany dzień */}
                 <div className="text-center text-4xl font-extrabold text-purple-800 mb-8 tracking-wide">{date.toLocaleDateString()}</div>
-                {/* Weight form */}
-                <form className="flex flex-row gap-4 items-center mb-8 w-full" onSubmit={handleWeightSubmit}>
-                  <input type="number" step="0.01" min="0" className="border-2 border-purple-300 rounded-lg px-3 py-2 text-purple-900 font-semibold focus:outline-none focus:border-purple-500 bg-purple-50 w-28 max-w-[100px]" placeholder="Weight (g)" value={weight} onChange={e=>setWeight(e.target.value)} />
-                  <button className="add-button bg-purple-800 text-white font-bold px-4 py-2 rounded-xl shadow transition duration-200 hover:bg-purple-900 hover:text-teal-200 max-w-[140px] text-sm" type="submit" disabled={weightLoading}>{weightLoading ? 'Saving...' : 'ADD WEIGHT'}</button>
-                </form>
+                {/* Weight info */}
+                {weight && weight.weight ? (
+                  <div className="mb-8 w-full text-center text-2xl font-bold text-purple-800 flex items-center justify-center gap-2">
+                    Weight: {weight.weight} g
+                    <button className="ml-2 text-purple-700 hover:text-red-500 transition-colors" title="Usuń wagę" onClick={() => handleDeleteWeight(weight.id)}>
+                      <i className="fa-solid fa-trash text-lg" />
+                    </button>
+                  </div>
+                ) : (
+                  <form className="flex flex-row gap-4 items-center mb-8 w-full" onSubmit={handleWeightSubmit}>
+                    <input type="number" step="0.01" min="0" className="border-2 border-purple-300 rounded-lg px-3 py-2 text-purple-900 font-semibold focus:outline-none focus:border-purple-500 bg-purple-50 w-28 max-w-[100px]" placeholder="Weight (g)" value={weightForm} onChange={e=>setWeightForm(e.target.value)} required />
+                    <button className="add-button bg-purple-800 text-white font-bold px-4 py-2 rounded-xl shadow transition duration-200 hover:bg-purple-900 hover:text-teal-200 max-w-[140px] text-sm" type="submit" disabled={weightLoading}>{weightLoading ? 'Saving...' : 'ADD WEIGHT'}</button>
+                  </form>
+                )}
                 {/* Activities list */}
                 <div className="notes-section mb-4 w-full">
-                  <div className="notes-list">
+                  <div className="notes-list flex flex-col gap-3 overflow-y-auto max-h-[500px] scrollbar-thin scrollbar-thumb-purple-300 scrollbar-track-purple-100 py-2">
                     {activities.length === 0 ? (
                       <div className="note">
                         <div className="note-text text-purple-800 font-extrabold text-xl">No activities for this day.</div>
                       </div>
                     ) : activities.map((a, i) => (
-                      <div className="note flex gap-2 items-center mb-2" key={i}>
-                        <div className="note-time">{a.start}</div>
-                        <div className="note-time">{a.end}</div>
-                        <div className="note-text">{a.text}</div>
+                      <div
+                        className="flex flex-row w-full items-center bg-[var(--primary-purple)] rounded-xl shadow-md px-4 py-3 text-white font-semibold text-lg"
+                        key={i}
+                      >
+                        <div className="flex flex-row gap-2 mr-4 whitespace-nowrap min-w-[90px]">
+                          <div className="note-time font-bold text-white bg-white/20 rounded px-2 py-1">{a.start_time?.slice(0,5)}</div>
+                          <div className="note-time font-bold text-white bg-white/20 rounded px-2 py-1">{a.end_time?.slice(0,5)}</div>
+                        </div>
+                        <div className="note-text flex-1 break-words">{a.activity_text}</div>
+                        <button className="ml-4 text-white hover:text-red-400 transition-colors" title="Usuń aktywność" onClick={() => handleDeleteActivity(a.id)}>
+                          <i className="fa-solid fa-trash text-lg" />
+                        </button>
                       </div>
                     ))}
                   </div>
