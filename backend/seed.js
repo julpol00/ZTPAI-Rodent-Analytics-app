@@ -23,9 +23,9 @@ async function seed() {
   // users
   const bcrypt = require('bcryptjs');
   const pw = bcrypt.hashSync('password', 10);
-  await User.create({ id: 1, email: 'admin@example.com', password: pw, name: 'Admin', surname: 'User', role_id: 1 });
-  await User.create({ id: 2, email: 'demo@example.com', password: '$2y$10$abcdefghijklmnopqrstuv.DemoHashHashHashHash', name: 'Demo', surname: 'User', role_id: 2 });
-  await User.create({ id: 3, email: 'test@example.com', password: pw, name: 'Test', surname: 'User', role_id: 2 });
+  await User.create({ id: 1, email: 'admin@example.com', password: pw, name: 'Admin', surname: 'User', role_id: 1, blocked: false });
+  await User.create({ id: 2, email: 'demo@example.com', password: '$2y$10$abcdefghijklmnopqrstuv.DemoHashHashHashHash', name: 'Demo', surname: 'User', role_id: 2, blocked: false });
+  await User.create({ id: 3, email: 'test@example.com', password: pw, name: 'Test', surname: 'User', role_id: 2, blocked: false});
 
   // animals
   await Animal.create({ id:1, id_user:1, name:'DemoRodent', species:'DemoSpecies', birth:'2024-01-01', description:'This is a demo rodent', avatar:'demo.png' });

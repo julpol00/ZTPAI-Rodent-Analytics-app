@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     password: { type: DataTypes.STRING(255), allowNull: false },
     name: { type: DataTypes.STRING(50), allowNull: false },
     surname: { type: DataTypes.STRING(50), allowNull: false },
-    role_id: { type: DataTypes.INTEGER, allowNull: true }
+    role_id: { type: DataTypes.INTEGER, allowNull: true },
+    blocked: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false }
   }, { tableName: 'users', timestamps: false });
 };

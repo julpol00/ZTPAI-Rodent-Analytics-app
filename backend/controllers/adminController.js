@@ -8,7 +8,7 @@ function onlyAdmin(req, res, next) {
 
 // GET /admin/users - lista użytkowników
 async function getUsers(req, res) {
-  const users = await User.findAll({ attributes: ['id', 'email', 'name', 'surname', 'role_id'] });
+  const users = await User.findAll({ attributes: ['id', 'email', 'name', 'surname', 'role_id', 'blocked'] });
   res.json(users);
 }
 
