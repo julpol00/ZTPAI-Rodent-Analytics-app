@@ -6,8 +6,6 @@ import 'react-calendar/dist/Calendar.css';
 import '../index.css';
 import api, { deleteWeight, deleteActivity } from '../api';
 
-
-
 export default function PetJournal() {
   const { animalId } = useParams();
   const navigate = useNavigate();
@@ -22,17 +20,15 @@ export default function PetJournal() {
 
   const handleDeleteWeight = async (weightId) => {
     const token = localStorage.getItem('token');
-    console.log('token:', token, 'animalId:', animalId, 'weightId:', weightId);
     if (!token) return;
     try {
       await deleteWeight(token, animalId, weightId);
       setWeight(null);
     } catch (err) {
-      alert('Błąd podczas usuwania rekordu wagi.');
+      alert('Error while deleting weight record.');
     }
   };
 
-    // Usuwanie aktywności
   const handleDeleteActivity = async (activityId) => {
     const token = localStorage.getItem('token');
     if (!token) return;
@@ -40,7 +36,7 @@ export default function PetJournal() {
       await deleteActivity(token, animalId, activityId);
       setActivities((prev) => prev.filter((a) => a.id !== activityId));
     } catch (err) {
-      alert('Błąd podczas usuwania aktywności.');
+      alert('Error while deleting activity.');
     }
   };
 
@@ -54,21 +50,18 @@ export default function PetJournal() {
           date_weight: dateStr,
           weight: weightForm
         }, { headers: { Authorization: `Bearer ${token}` } });
-        // reload weight
         const res = await api.get(`/animals/${animalId}/weight?date=${dateStr}`, { headers: { Authorization: `Bearer ${token}` } });
         setWeight(res.data);
         setWeightForm('');
-      } catch {
-        // obsługa błędu
+      } catch (err) {
+        alert('Error while saving weight.');
       }
       setWeightLoading(false);
     };
   const [activityLoading, setActivityLoading] = useState(false);
 
-  // Pobierz token z localStorage
   const token = localStorage.getItem('token');
 
-  // Pobierz dane zwierzaka
   useEffect(() => {
     if (!token || !animalId) return;
     api.get(`/animals`, { headers: { Authorization: `Bearer ${token}` } })
@@ -79,7 +72,6 @@ export default function PetJournal() {
       .catch(() => setAnimal(null));
   }, [animalId, token]);
 
-  // Pobierz wagę i aktywności na wybrany dzień
   useEffect(() => {
     if (!token || !animalId) return;
     const dateStr = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
@@ -91,7 +83,6 @@ export default function PetJournal() {
       .catch(err => { console.log('activities error', err); setActivities([]); });
   }, [animalId, date, token]);
 
-  // Dodawanie aktywności
   const handleActivitySubmit = async (e) => {
     e.preventDefault();
 
@@ -108,12 +99,11 @@ export default function PetJournal() {
         end_time: activityForm.end,
         activity_text: activityForm.text
       }, { headers: { Authorization: `Bearer ${token}` } });
-      // reload activities
       const res = await api.get(`/animals/${animalId}/activities?date=${dateStr}`, { headers: { Authorization: `Bearer ${token}` } });
       setActivities(res.data);
       setActivityForm({ start: '00:00', end: '00:00', text: '' });
-    } catch {
-      // obsługa błędu
+    } catch (err) {
+      alert('Error while saving activity.');
     }
     setActivityLoading(false);
   };
@@ -153,10 +143,10 @@ export default function PetJournal() {
             </div>
             <div className="w-full bg-[var(--primary-purple)] bg-opacity-80 rounded-xl shadow-md py-4 px-4 mt-8 text-center font-bold text-white text-base tracking-wide">{animal.description}</div>
           </div>
-          {/* Center+Right: Calendar + Add weight & activity in one big card */}
+          {/* Center+Right: Calendar + Add weight */}
           <div className="flex flex-col items-center bg-white rounded-2xl shadow-lg p-8 w-full mx-auto" style={{ maxWidth: 'calc(930px)' }}>
             <div className="flex flex-row w-full justify-between items-start gap-12">
-              {/* Kalendarz */}
+              {/* Calendar */}
               <div className="flex flex-col items-center justify-start flex-shrink-0 w-[400px]">
                 <div className="mb-4 rounded-2xl shadow-2xl border-8 border-purple-300 bg-white">
                   <Calendar
@@ -169,9 +159,9 @@ export default function PetJournal() {
                   />
                 </div>
               </div>
-              {/* Panel dodawania */}
+              {/* Add panel */}
               <div className="flex flex-col items-center w-[440px] flex-shrink-0 px-2">
-                {/* Wybrany dzień */}
+                {/* Selected day */}
                 <div className="text-center text-4xl font-extrabold text-purple-800 mb-8 tracking-wide">{date.toLocaleDateString()}</div>
                 {/* Weight info */}
                 {weight && weight.weight ? (
@@ -223,7 +213,6 @@ export default function PetJournal() {
           </div>
         </main>
       </div>
-      {/* FontAwesome CDN */}
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     </div>
   );

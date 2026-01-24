@@ -25,7 +25,6 @@ export default function Dashboard(){
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) return;
-    // Fetch user info
     me(token).then(res => {
       setUser(res.data.user);
       localStorage.setItem('user', JSON.stringify(res.data.user));

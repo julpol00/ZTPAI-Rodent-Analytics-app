@@ -57,7 +57,6 @@ export default function Notifications() {
     if (name === 'weekly' && !checked && !form.daily) setForm(f => ({ ...f, weekday: '' }))
   }
 
-  // Obsługa dodawania powiadomienia
   async function handleSubmit(e) {
     e.preventDefault();
     const token = localStorage.getItem('token');
@@ -80,7 +79,6 @@ export default function Notifications() {
     try {
       await addNotification(token, payload);
       setForm({ animal_id: '', time: '00:00', message: '', daily: false, weekly: false, date: '', weekday: '' });
-      // Odśwież listę powiadomień
       const res = await fetchNotifications(token);
       setNotifications(res.data);
     } catch (err) {
@@ -88,7 +86,6 @@ export default function Notifications() {
     }
   }
 
-  // Obsługa usuwania powiadomienia
   async function handleDelete(id) {
     const token = localStorage.getItem('token');
     if (!token) return;
@@ -99,6 +96,7 @@ export default function Notifications() {
       alert('Error deleting notification');
     }
   }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-300 to-purple-800 font-sans flex flex-col">
       <header className="bg-white py-4 px-6 flex justify-center items-center shadow flex-shrink-0 relative" style={{minHeight:'4.5rem'}}>
@@ -249,7 +247,7 @@ export default function Notifications() {
                 <div
                   className="notes-list"
                   style={{
-                    maxHeight: '28em', // fits ~4-5 notifications
+                    maxHeight: '28em',
                     overflowY: 'auto',
                     paddingRight: '0.5em',
                     scrollbarWidth: 'thin',
@@ -307,7 +305,6 @@ export default function Notifications() {
           </section>
         </main>
       </div>
-      {/* FontAwesome CDN */}
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     </div>
   )
