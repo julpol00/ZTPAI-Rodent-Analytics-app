@@ -1,29 +1,12 @@
 
 import React, { useEffect, useState } from 'react';
-  // Usuwanie aktywności
-  const handleDeleteActivity = async (activityId) => {
-    try {
-      await api.delete(`/animals/${animalId}/activities/${activityId}`, { headers: { Authorization: `Bearer ${token}` } });
-      setActivities((prev) => prev.filter((a) => a.id !== activityId));
-    } catch (err) {
-      alert('Błąd podczas usuwania aktywności.');
-    }
-  };
-
-  // Usuwanie rekordu wagi
-  const handleDeleteWeight = async (weightId) => {
-    try {
-      await api.delete(`/animals/${animalId}/weight/${weightId}`, { headers: { Authorization: `Bearer ${token}` } });
-      setWeight(null);
-    } catch (err) {
-      alert('Błąd podczas usuwania rekordu wagi.');
-    }
-  };
 import { useParams, useNavigate } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../index.css';
-import api from '../api';
+import api, { deleteWeight, deleteActivity } from '../api';
+
+
 
 export default function PetJournal() {
   const { animalId } = useParams();
@@ -35,7 +18,33 @@ export default function PetJournal() {
   const [activityForm, setActivityForm] = useState({ start: '00:00', end: '00:00', text: '' });
   const [weightForm, setWeightForm] = useState('');
   const [weightLoading, setWeightLoading] = useState(false);
-    // Dodawanie wagi
+
+
+  const handleDeleteWeight = async (weightId) => {
+    const token = localStorage.getItem('token');
+    console.log('token:', token, 'animalId:', animalId, 'weightId:', weightId);
+    if (!token) return;
+    try {
+      await deleteWeight(token, animalId, weightId);
+      setWeight(null);
+    } catch (err) {
+      alert('Błąd podczas usuwania rekordu wagi.');
+    }
+  };
+
+    // Usuwanie aktywności
+  const handleDeleteActivity = async (activityId) => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    try {
+      await deleteActivity(token, animalId, activityId);
+      setActivities((prev) => prev.filter((a) => a.id !== activityId));
+    } catch (err) {
+      alert('Błąd podczas usuwania aktywności.');
+    }
+  };
+
+
     const handleWeightSubmit = async (e) => {
       e.preventDefault();
       setWeightLoading(true);

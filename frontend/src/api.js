@@ -1,3 +1,11 @@
+// Delete weight record
+export const deleteWeight = (token, animalId, weightId) =>
+	api.delete(`/animals/${animalId}/weight/${weightId}`, { headers: { Authorization: `Bearer ${token}` } });
+
+// Delete activity record
+export const deleteActivity = (token, animalId, activityId) =>
+	api.delete(`/animals/${animalId}/activities/${activityId}`, { headers: { Authorization: `Bearer ${token}` } });
+
 export const fetchNotifications = (token) =>
 	api.get('/notifications', { headers: { Authorization: `Bearer ${token}` } });
 

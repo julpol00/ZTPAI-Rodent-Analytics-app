@@ -39,20 +39,20 @@ services:
     working_dir: /app
     command: npm run dev -- --host
 
-  frontend:
-    build: ./frontend
-    container_name: rodent-frontend
-    restart: always
-    environment:
-      VITE_API_URL: http://localhost:3001/api
-    ports:
-      - "5173:5173"
-    depends_on:
-      - backend
-    volumes:
-      - ./frontend:/app
-    working_dir: /app
-    command: npm run dev
+  # frontend:
+  #   build: ./frontend
+  #   container_name: rodent-frontend
+  #   restart: always
+  #   environment:
+  #     VITE_API_URL: http://localhost:3001/api
+  #   ports:
+  #     - "5173:5173"
+  #   depends_on:
+  #     - backend
+  #   volumes:
+  #     - ./frontend:/app
+  #   working_dir: /app
+  #   command: npm run dev
 
 volumes:
   db_data:
