@@ -94,6 +94,11 @@ export default function PetJournal() {
   // Dodawanie aktywności
   const handleActivitySubmit = async (e) => {
     e.preventDefault();
+
+    if (activityForm.end < activityForm.start) {
+      alert('End time cannot be earlier than start time.');
+      return;
+    }
     setActivityLoading(true);
     try {
       const dateStr = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
