@@ -153,7 +153,17 @@ export default function PetJournal() {
             <div className="flex flex-row w-full justify-between items-start gap-12">
               {/* Kalendarz */}
               <div className="flex flex-col items-center justify-start flex-shrink-0 w-[400px]">
-                <Calendar onChange={setDate} value={date} className="mb-4" />
+                <div className="mb-4 rounded-2xl shadow-2xl border-8 border-purple-300 bg-white">
+                  <Calendar
+                    onChange={setDate}
+                    value={date}
+                    className="!shadow-none !border-none !bg-transparent"
+                    formatShortWeekday={(locale, date) => {
+                      const weekdays = ['nd', 'pn', 'wt', 'śr', 'cz', 'pt', 'sb'];
+                      return weekdays[date.getDay()];
+                    }}
+                  />
+                </div>
               </div>
               {/* Panel dodawania */}
               <div className="flex flex-col items-center w-[440px] flex-shrink-0 px-2">
