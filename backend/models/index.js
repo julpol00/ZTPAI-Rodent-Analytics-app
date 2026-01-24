@@ -14,7 +14,7 @@ Role.hasMany(User, { foreignKey: 'role_id' });
 User.belongsTo(Role, { foreignKey: 'role_id' });
 
 User.hasMany(Animal, { foreignKey: 'id_user' });
-Animal.belongsTo(User, { foreignKey: 'id_user' });
+Animal.belongsTo(User, { as: 'User', foreignKey: 'id_user' });
 
 Animal.hasMany(Activity, { foreignKey: 'animal_id', onDelete: 'CASCADE' });
 Activity.belongsTo(Animal, { foreignKey: 'animal_id' });

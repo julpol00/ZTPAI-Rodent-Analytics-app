@@ -1,31 +1,48 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { me } from '../api'
 
-const menu = [
+const baseMenu = [
   { label: 'ANIMALS', icon: 'fa-paw', route: '/dashboard' },
   { label: 'ANALYSIS', icon: 'fa-chart-simple', route: '/analysis' },
   { label: 'NOTIFICATION', icon: 'fa-bell', route: '/notifications' },
   { label: 'SETTINGS', icon: 'fa-gears', route: '/settings', bottom: true },
 ]
 
+
 export default function Dashboard(){
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const logout = () => {
-    localStorage.removeItem('token')
-    navigate('/login')
-  }
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/login');
+  };
 
+  const [animals, setAnimals] = useState([]);
+  const [user, setUser] = useState(null);
+  const [menu, setMenu] = useState(baseMenu);
 
-  const [animals, setAnimals] = useState([])
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    if (!token) return
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    // Fetch user info
+    me(token).then(res => {
+      setUser(res.data.user);
+      localStorage.setItem('user', JSON.stringify(res.data.user));
+      if (res.data.user.role_id === 1) {
+        setMenu([
+          ...baseMenu.slice(0, 3),
+          { label: 'ADMIN', icon: 'fa-user-shield', route: '/admin' },
+          ...baseMenu.slice(3)
+        ]);
+      }
+    });
     import('../api').then(({ fetchAnimals }) => {
       fetchAnimals(token)
         .then(res => setAnimals(res.data))
-        .catch(() => setAnimals([]))
-    })
-  }, [])
+        .catch(() => setAnimals([]));
+    });
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-300 to-purple-800 font-sans flex flex-col">
@@ -92,5 +109,5 @@ export default function Dashboard(){
       {/* FontAwesome CDN */}
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     </div>
-  )
+  );
 }
