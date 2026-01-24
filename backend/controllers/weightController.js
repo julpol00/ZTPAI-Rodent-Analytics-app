@@ -1,4 +1,4 @@
-// DELETE /animals/:id/weight/:weightId
+
 exports.deleteWeight = async (req, res) => {
   const animal_id = req.params.id;
   const weightId = req.params.weightId;
@@ -11,7 +11,7 @@ exports.deleteWeight = async (req, res) => {
     res.status(500).json({ error: err.message || 'Server error' });
   }
 };
-// POST /animals/:id/weight
+
 exports.addWeight = async (req, res) => {
   const animal_id = req.params.id;
   const { date_weight, weight } = req.body;
@@ -27,7 +27,6 @@ exports.addWeight = async (req, res) => {
 };
 const { Weight } = require('../models');
 
-// GET /animals/:id/weight?date=YYYY-MM-DD
 exports.getWeightForDate = async (req, res) => {
   const animal_id = req.params.id;
   const date = req.query.date;

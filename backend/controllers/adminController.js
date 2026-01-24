@@ -1,12 +1,10 @@
 const { User, Animal, Role } = require('../models');
 
-// Middleware: tylko admin (role_id === 1)
 function onlyAdmin(req, res, next) {
   if (req.user && req.user.role_id === 1) return next();
   return res.status(403).json({ message: 'Forbidden: admin only' });
 }
 
-// GET /admin/users - lista użytkowników
 async function getUsers(req, res) {
   const users = await User.findAll({ attributes: ['id', 'email', 'name', 'surname', 'role_id', 'blocked'] });
   res.json(users);
@@ -14,7 +12,6 @@ async function getUsers(req, res) {
 
 module.exports = { onlyAdmin, getUsers };
 
-// DELETE /admin/users/:id - usuń użytkownika
 async function deleteUser(req, res) {
   const { id } = req.params;
   if (Number(id) === req.user.id) return res.status(400).json({ message: 'Cannot delete yourself' });
@@ -23,7 +20,6 @@ async function deleteUser(req, res) {
   return res.status(404).json({ message: 'User not found' });
 }
 
-// PATCH /admin/users/:id/block - blokuj/odblokuj użytkownika
 async function blockUser(req, res) {
   const { id } = req.params;
   const { blocked } = req.body;
@@ -34,7 +30,6 @@ async function blockUser(req, res) {
   res.json({ success: true });
 }
 
-// PATCH /admin/users/:id/role - zmień rolę użytkownika
 async function changeUserRole(req, res) {
   const { id } = req.params;
   const { role_id } = req.body;
@@ -47,7 +42,6 @@ async function changeUserRole(req, res) {
   res.json({ success: true });
 }
 
-// GET /admin/animals - lista wszystkich zwierząt
 async function getAnimals(req, res) {
   const animals = await Animal.findAll({
     include: [{
@@ -59,7 +53,7 @@ async function getAnimals(req, res) {
   res.json(animals);
 }
 
-// DELETE /admin/animals/:id - usuń zwierzę
+
 async function deleteAnimal(req, res) {
   const { id } = req.params;
   const deleted = await Animal.destroy({ where: { id } });

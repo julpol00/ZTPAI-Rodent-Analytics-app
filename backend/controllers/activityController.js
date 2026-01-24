@@ -1,4 +1,4 @@
-// DELETE /animals/:id/activities/:activityId
+
 exports.deleteActivity = async (req, res) => {
   const animal_id = req.params.id;
   const activityId = req.params.activityId;
@@ -13,7 +13,6 @@ exports.deleteActivity = async (req, res) => {
 };
 const { Activity } = require('../models');
 
-// GET /animals/:id/activities?date=YYYY-MM-DD
 exports.getActivitiesForDate = async (req, res) => {
   const animal_id = req.params.id;
   const date = req.query.date;
@@ -29,7 +28,6 @@ exports.getActivitiesForDate = async (req, res) => {
   }
 };
 
-// POST /animals/:id/activities
 exports.addActivity = async (req, res) => {
   const animal_id = req.params.id;
   const { activity_date, start_time, end_time, activity_text } = req.body;

@@ -1,3 +1,5 @@
+// Router for animals, weights, and activities endpoints
+
 const express = require('express');
 const router = express.Router();
 const path = require('path');
@@ -8,8 +10,6 @@ const { authenticate } = require('../middlewares/authMiddleware');
 const { createAnimal } = require('../controllers/animalController');
 const { getWeightForDate, addWeight, deleteWeight } = require('../controllers/weightController');
 const { getActivitiesForDate, addActivity, deleteActivity } = require('../controllers/activityController');
-
-
 
 // animal photo upload
 const storage = multer.diskStorage({
@@ -23,7 +23,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Animal routes
+// Animal routes 
 router.get('/', authenticate, async (req, res) => {
   try {
     const animals = await Animal.findAll({ where: { id_user: req.user.id } });
@@ -32,7 +32,6 @@ router.get('/', authenticate, async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
-
 router.post('/', authenticate, upload.single('photo'), createAnimal);
 
 // Weight routes 
@@ -40,7 +39,7 @@ router.get('/:id/weight', authenticate, getWeightForDate);
 router.post('/:id/weight', authenticate, addWeight);
 router.delete('/:id/weight/:weightId', authenticate, deleteWeight);
 
-// Activity routes 
+// Activity routes
 router.get('/:id/activities', authenticate, getActivitiesForDate);
 router.post('/:id/activities', authenticate, addActivity);
 router.delete('/:id/activities/:activityId', authenticate, deleteActivity);
