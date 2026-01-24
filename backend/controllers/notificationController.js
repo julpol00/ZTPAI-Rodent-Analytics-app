@@ -2,11 +2,11 @@ const { Notification, Animal } = require('../models');
 
 exports.getNotifications = async (req, res) => {
   try {
-    // Możesz filtrować po użytkowniku jeśli jest taka potrzeba
     const notifications = await Notification.findAll({
       include: [{
         model: Animal,
-        attributes: ['name']
+        attributes: ['name', 'id_user'],
+        where: { id_user: req.user.id }
       }]
     });
     res.json(notifications);

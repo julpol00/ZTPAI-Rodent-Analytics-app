@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 const menu = [
   { label: 'ANIMALS', icon: 'fa-paw', route: '/dashboard' },
   { label: 'ANALYSIS', icon: 'fa-chart-simple', route: '/analysis' },
-  { label: 'NOTIFICATION', icon: 'fa-bell', route: '/notifications' },
+  { label: 'NOTIFICATIONS', icon: 'fa-bell', route: '/notifications' },
   { label: 'SETTINGS', icon: 'fa-gears', route: '/settings', bottom: true },
 ]
 
@@ -117,7 +117,7 @@ export default function Notifications() {
             {menu.filter(m=>!m.bottom).map(item => (
               <li key={item.label}>
                 <button
-                  className={`w-full flex items-center gap-3 px-5 py-4 rounded-xl bg-white/10 hover:bg-white/20 transition font-bold text-lg tracking-wide ${item.label === 'NOTIFICATION' ? 'bg-white/20 text-teal-200' : ''}`}
+                  className={`w-full flex items-center gap-3 px-5 py-4 rounded-xl bg-white/10 hover:bg-white/20 transition font-bold text-lg tracking-wide ${item.label === 'NOTIFICATIONS' ? 'bg-white/20 text-teal-200' : ''}`}
                   onClick={()=>navigate(item.route)}
                 >
                   <i className={`fa-solid ${item.icon} text-2xl`} />
@@ -255,48 +255,52 @@ export default function Notifications() {
                     scrollbarWidth: 'thin',
                   }}
                 >
-                  {notifications.map((n) => (
-                    <div
-                      key={n.id}
-                      className="note relative flex flex-col gap-2 mb-6 p-5 rounded-xl border border-purple-300 bg-gradient-to-br from-purple-100 via-white to-purple-200 transition-all duration-200"
-                      style={{ boxShadow: '0 8px 32px 0 rgba(93,46,140,0.32)' }}
-                      onMouseEnter={e => {
-                        e.currentTarget.style.boxShadow = '0 12px 40px 0 rgba(93,46,140,0.55)';
-                        e.currentTarget.style.background = 'linear-gradient(135deg, #e9d5ff 0%, #f3e8ff 60%, #c4b5fd 100%)';
-                      }}
-                      onMouseLeave={e => {
-                        e.currentTarget.style.boxShadow = '0 8px 32px 0 rgba(93,46,140,0.32)';
-                        e.currentTarget.style.background = '';
-                      }}
-                    >
-                      <button
-                        className="absolute top-3 right-3 text-purple-700 hover:text-red-500 transition"
-                        title="Delete notification"
-                        onClick={() => handleDelete(n.id)}
-                        style={{ background: 'none', border: 'none', padding: 0, boxShadow: 'none' }}
+                  {notifications.length === 0 ? (
+                    <div className="text-center text-purple-800 font-semibold py-8">No notification has been added yet</div>
+                  ) : (
+                    notifications.map((n) => (
+                      <div
+                        key={n.id}
+                        className="note relative flex flex-col gap-2 mb-6 p-5 rounded-xl border border-purple-300 bg-gradient-to-br from-purple-100 via-white to-purple-200 transition-all duration-200"
+                        style={{ boxShadow: '0 8px 32px 0 rgba(93,46,140,0.32)' }}
+                        onMouseEnter={e => {
+                          e.currentTarget.style.boxShadow = '0 12px 40px 0 rgba(93,46,140,0.55)';
+                          e.currentTarget.style.background = 'linear-gradient(135deg, #e9d5ff 0%, #f3e8ff 60%, #c4b5fd 100%)';
+                        }}
+                        onMouseLeave={e => {
+                          e.currentTarget.style.boxShadow = '0 8px 32px 0 rgba(93,46,140,0.32)';
+                          e.currentTarget.style.background = '';
+                        }}
                       >
-                        <i className="fa-solid fa-trash text-lg" />
-                      </button>
-                      <div className="flex items-center gap-3">
-                        <span className="note-time text-purple-800 font-bold text-lg">{n.notification_time.slice(0,5)}</span>
-                        {n.repeat === 'no_repeat' && n.notification_date && (
-                          <span className="note-date text-teal-700 font-semibold text-lg">{n.notification_date}</span>
+                        <button
+                          className="absolute top-3 right-3 text-purple-700 hover:text-red-500 transition"
+                          title="Delete notification"
+                          onClick={() => handleDelete(n.id)}
+                          style={{ background: 'none', border: 'none', padding: 0, boxShadow: 'none' }}
+                        >
+                          <i className="fa-solid fa-trash text-lg" />
+                        </button>
+                        <div className="flex items-center gap-3">
+                          <span className="note-time text-purple-800 font-bold text-lg">{n.notification_time.slice(0,5)}</span>
+                          {n.repeat === 'no_repeat' && n.notification_date && (
+                            <span className="note-date text-teal-700 font-semibold text-lg">{n.notification_date}</span>
+                          )}
+                          {n.repeat === 'repeat_weekly' && n.notification_weekday && (
+                            <span className="note-weekday text-teal-700 font-semibold text-lg">{n.notification_weekday}</span>
+                          )}
+                        </div>
+                        {n.Animal && n.Animal.name && (
+                          <div className="animal-name text-purple-800 font-bold text-lg mb-1">{n.Animal.name}</div>
                         )}
-                        {n.repeat === 'repeat_weekly' && n.notification_weekday && (
-                          <span className="note-weekday text-teal-700 font-semibold text-lg">{n.notification_weekday}</span>
-                        )}
+                        <div className="note-text text-gray-700">{n.notification_message}</div>
+                        <div className="repeat-info text-purple-800 font-bold text-base">
+                          {n.repeat === 'no_repeat' && 'No repeat'}
+                          {n.repeat === 'repeat_daily' && 'Daily repeat'}
+                          {n.repeat === 'repeat_weekly' && 'Weekly repeat'}
+                        </div>
                       </div>
-                      {n.Animal && n.Animal.name && (
-                        <div className="animal-name text-purple-800 font-bold text-lg mb-1">{n.Animal.name}</div>
-                      )}
-                      <div className="note-text text-gray-700">{n.notification_message}</div>
-                      <div className="repeat-info text-purple-800 font-bold text-base">
-                        {n.repeat === 'no_repeat' && 'No repeat'}
-                        {n.repeat === 'repeat_daily' && 'Daily repeat'}
-                        {n.repeat === 'repeat_weekly' && 'Weekly repeat'}
-                      </div>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </div>
             </div>
