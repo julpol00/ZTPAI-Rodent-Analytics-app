@@ -158,10 +158,9 @@ export default function PetJournal() {
                     onChange={setDate}
                     value={date}
                     className="!shadow-none !border-none !bg-transparent"
-                    formatShortWeekday={(locale, date) => {
-                      const weekdays = ['nd', 'pn', 'wt', 'śr', 'cz', 'pt', 'sb'];
-                      return weekdays[date.getDay()];
-                    }}
+                    locale="en-US"
+                    minDate={animal && animal.birth ? new Date(animal.birth) : undefined}
+                    maxDate={new Date()}
                   />
                 </div>
               </div>
