@@ -123,7 +123,7 @@ export default function PetJournal() {
         <Sidebar />
         {/* Main content */}
         <main className="flex-1 flex flex-row gap-0 items-start justify-center py-16 px-8">
-          {/* Left: Pet profile */}
+          {/* Pet profile */}
           <div className="flex flex-col items-center w-80 bg-white rounded-2xl shadow-lg p-6" style={{ marginLeft: '6rem' }}>
             <img src={`/img/uploads/${animal.avatar}`} alt={animal.name} className="rounded-xl w-48 h-48 object-cover mb-4 border-4 border-[var(--primary-purple)]" />
             <div className="flex flex-col w-full gap-3 items-center">
@@ -133,7 +133,6 @@ export default function PetJournal() {
             </div>
             <div className="w-full bg-[var(--primary-purple)] bg-opacity-80 rounded-xl shadow-md py-4 px-4 mt-8 text-center font-bold text-white text-base tracking-wide">{animal.description}</div>
           </div>
-          {/* Center+Right: Calendar + Add weight */}
           <div className="flex flex-col items-center bg-white rounded-2xl shadow-lg p-8 w-full mx-auto" style={{ maxWidth: 'calc(930px)' }}>
             <div className="flex flex-row w-full justify-between items-start gap-12">
               {/* Calendar */}
