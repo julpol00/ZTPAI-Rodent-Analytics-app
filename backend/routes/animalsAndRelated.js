@@ -1,5 +1,4 @@
 // Router for animals, weights, and activities endpoints
-
 const express = require('express');
 const router = express.Router();
 const path = require('path');
@@ -23,6 +22,40 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+
+/**
+ * @swagger
+ * /animals:
+ *   get:
+ *     summary: Get all animals for the authenticated user
+ *     tags:
+ *       - Animals
+ *     responses:
+ *       200:
+ *         description: List of animals
+ *   post:
+ *     summary: Create a new animal (with photo upload)
+ *     tags:
+ *       - Animals
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               species:
+ *                 type: string
+ *               photo:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       201:
+ *         description: Animal created
+ */
+
 // Animal routes 
 router.get('/', authenticate, async (req, res) => {
   try {
@@ -34,10 +67,132 @@ router.get('/', authenticate, async (req, res) => {
 });
 router.post('/', authenticate, upload.single('photo'), createAnimal);
 
+/**
+ * @swagger
+ * /animals/{id}/weight:
+ *   get:
+ *     summary: Get weights for animal by date
+ *     tags:
+ *       - Weights
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: List of weights
+ *   post:
+ *     summary: Add weight for animal
+ *     tags:
+ *       - Weights
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               value:
+ *                 type: number
+ *               date:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Weight added
+ * /animals/{id}/weight/{weightId}:
+ *   delete:
+ *     summary: Delete weight entry
+ *     tags:
+ *       - Weights
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *       - name: weightId
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       204:
+ *         description: Weight deleted
+ */
+
 // Weight routes 
 router.get('/:id/weight', authenticate, getWeightForDate);
 router.post('/:id/weight', authenticate, addWeight);
 router.delete('/:id/weight/:weightId', authenticate, deleteWeight);
+
+/**
+ * @swagger
+ * /animals/{id}/activities:
+ *   get:
+ *     summary: Get activities for animal by date
+ *     tags:
+ *       - Activities
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: List of activities
+ *   post:
+ *     summary: Add activity for animal
+ *     tags:
+ *       - Activities
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               type:
+ *                 type: string
+ *               date:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Activity added
+ * /animals/{id}/activities/{activityId}:
+ *   delete:
+ *     summary: Delete activity entry
+ *     tags:
+ *       - Activities
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *       - name: activityId
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       204:
+ *         description: Activity deleted
+ */
 
 // Activity routes
 router.get('/:id/activities', authenticate, getActivitiesForDate);

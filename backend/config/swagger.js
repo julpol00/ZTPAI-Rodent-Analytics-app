@@ -15,7 +15,7 @@ const options = {
       },
     ],
   },
-  apis: ['./routes/*.js', './models/*.js'], // Ścieżki do plików z JSDoc
+  apis: ['./routes/*.js', './models/*.js'], 
 };
 
 const swaggerSpec = swaggerJsdoc(options);

@@ -6,6 +6,17 @@ const authRoutes = require('./auth');
 const animalsAndRelatedRoutes = require('./animalsAndRelated');
 const notificationRoutes = require('./notification');
 
+/**
+ * @swagger
+ * /health:
+ *   get:
+ *     summary: Health check endpoint
+ *     tags:
+ *       - Health
+ *     responses:
+ *       200:
+ *         description: Server is healthy
+ */
 
 router.get('/health', health);
 router.use('/auth', authRoutes);
