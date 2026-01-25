@@ -2,7 +2,7 @@ const path = require('path');
 require('dotenv').config();
 require('dotenv').config({ path: path.join(__dirname, '.env', '.env.example') });
 
-const { sequelize, Role, Permission, User, Animal, Activity, Notification, Weight } = require('./models');
+const { sequelize, Role, User, Animal, Activity, Notification, Weight } = require('./models');
 
 async function seed() {
   await sequelize.sync({ force: true });
@@ -13,11 +13,8 @@ async function seed() {
     { id: 2, role_name: 'user' }
   ]);
 
-  // permissions
-  await Permission.create({ id: 1, permission_name: 'ADD_RODENT' });
 
-  // role_permissions (through table)
-  await sequelize.getQueryInterface().bulkInsert('role_permissions', [ { role_id: 2, permission_id: 1 } ]);
+  // (permissions and role_permissions removed)
 
 
   // users

@@ -2,7 +2,6 @@ const sequelize = require('../config/db');
 const { DataTypes } = require('sequelize');
 
 const Role = require('./role')(sequelize, DataTypes);
-const Permission = require('./permission')(sequelize, DataTypes);
 const User = require('./user')(sequelize, DataTypes);
 const Animal = require('./animal')(sequelize, DataTypes);
 const Activity = require('./activity')(sequelize, DataTypes);
@@ -23,14 +22,11 @@ Weight.belongsTo(Animal, { foreignKey: 'animal_id' });
 
 Animal.hasMany(Notification, { foreignKey: 'animal_id' });
 Notification.belongsTo(Animal, { foreignKey: 'animal_id' });
-
-Role.belongsToMany(Permission, { through: 'role_permissions', foreignKey: 'role_id', otherKey: 'permission_id', timestamps: false });
-Permission.belongsToMany(Role, { through: 'role_permissions', foreignKey: 'permission_id', otherKey: 'role_id', timestamps: false });
+// Removed Permission relationships
 
 module.exports = {
   sequelize,
   Role,
-  Permission,
   User,
   Animal,
   Activity,
