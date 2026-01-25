@@ -79,20 +79,16 @@ Perfect for all rodent owners who want to ensure the best care for their furry f
 ## Preview
 
 ### Login page
-
 ![Dashboard](readme_img/login.png)
 
 ### Dashboard
-
 ![Dashboard](readme_img/dashboard.png)
 
 ### Pet Journal
-
 ![Pet_Journal](readme_img/pet_journal.png)
 
 ### Notifications
-
-![mobile](readme_img/notifcations.png)
+![notifcations](readme_img/notifications.png)
 
 ## Data Base
 
