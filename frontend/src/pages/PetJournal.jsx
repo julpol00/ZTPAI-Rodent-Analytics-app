@@ -1,10 +1,13 @@
 
+
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../index.css';
 import api, { deleteWeight, deleteActivity } from '../api';
+import Header from '../components/Header';
+import Sidebar from '../components/Sidebar';
 
 export default function PetJournal() {
   const { animalId } = useParams();
@@ -12,22 +15,21 @@ export default function PetJournal() {
   const [animal, setAnimal] = useState(null);
   const [date, setDate] = useState(new Date());
   const [weight, setWeight] = useState(null);
-  const [activities, setActivities] = useState([]);
-  const [activityForm, setActivityForm] = useState({ start: '00:00', end: '00:00', text: '' });
   const [weightForm, setWeightForm] = useState('');
   const [weightLoading, setWeightLoading] = useState(false);
+  const [activities, setActivities] = useState([]);
+  const [activityForm, setActivityForm] = useState({ start: '00:00', end: '00:00', text: '' });
 
-
-  const handleDeleteWeight = async (weightId) => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-    try {
-      await deleteWeight(token, animalId, weightId);
-      setWeight(null);
-    } catch (err) {
-      alert('Error while deleting weight record.');
-    }
-  };
+    const handleDeleteWeight = async (weightId) => {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      try {
+        await deleteWeight(token, animalId, weightId);
+        setWeight(null);
+      } catch (err) {
+        alert('Error while deleting weight record.');
+      }
+    };
 
   const handleDeleteActivity = async (activityId) => {
     const token = localStorage.getItem('token');
@@ -41,28 +43,28 @@ export default function PetJournal() {
   };
 
 
-    const handleWeightSubmit = async (e) => {
-      e.preventDefault();
-      setWeightLoading(true);
-      try {
-        const dateStr = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
-        await api.post(`/animals/${animalId}/weight`, {
-          date_weight: dateStr,
-          weight: weightForm
-        }, { headers: { Authorization: `Bearer ${token}` } });
-        const res = await api.get(`/animals/${animalId}/weight?date=${dateStr}`, { headers: { Authorization: `Bearer ${token}` } });
-        setWeight(res.data);
-        setWeightForm('');
-      } catch (err) {
-        alert('Error while saving weight.');
-      }
-      setWeightLoading(false);
-    };
+  const handleWeightSubmit = async (e) => {
+    e.preventDefault();
+    setWeightLoading(true);
+    const token = localStorage.getItem('token');
+    try {
+      const dateStr = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+      await api.post(`/animals/${animalId}/weight`, {
+        date_weight: dateStr,
+        weight: weightForm
+      }, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await api.get(`/animals/${animalId}/weight?date=${dateStr}`, { headers: { Authorization: `Bearer ${token}` } });
+      setWeight(res.data);
+      setWeightForm('');
+    } catch (err) {
+      alert('Error while saving weight.');
+    }
+    setWeightLoading(false);
+  };
   const [activityLoading, setActivityLoading] = useState(false);
 
-  const token = localStorage.getItem('token');
-
   useEffect(() => {
+    const token = localStorage.getItem('token');
     if (!token || !animalId) return;
     api.get(`/animals`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => {
@@ -70,9 +72,10 @@ export default function PetJournal() {
         setAnimal(found || null);
       })
       .catch(() => setAnimal(null));
-  }, [animalId, token]);
+  }, [animalId]);
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
     if (!token || !animalId) return;
     const dateStr = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
     api.get(`/animals/${animalId}/weight?date=${dateStr}`, { headers: { Authorization: `Bearer ${token}` } })
@@ -81,7 +84,7 @@ export default function PetJournal() {
     api.get(`/animals/${animalId}/activities?date=${dateStr}`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => { console.log('activities', res.data); setActivities(res.data); })
       .catch(err => { console.log('activities error', err); setActivities([]); });
-  }, [animalId, date, token]);
+  }, [animalId, date]);
 
   const handleActivitySubmit = async (e) => {
     e.preventDefault();
@@ -91,6 +94,7 @@ export default function PetJournal() {
       return;
     }
     setActivityLoading(true);
+    const token = localStorage.getItem('token');
     try {
       const dateStr = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
       await api.post(`/animals/${animalId}/activities`, {
@@ -108,29 +112,15 @@ export default function PetJournal() {
     setActivityLoading(false);
   };
 
-  if (!animal) return <div>Loading...</div>;
+  if (!animal) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-300 to-purple-800 font-sans flex flex-col">
-      <header className="bg-white py-4 px-6 flex justify-center items-center shadow flex-shrink-0 relative" style={{minHeight:'4.5rem'}}>
-        <div className="flex flex-col items-center w-full">
-          <div className="flex items-center justify-center gap-4">
-            <img src={"/img/logo_2.svg"} alt="logo" className="h-16" />
-            <div className="text-4xl font-black text-purple-800 tracking-wider">Rodent Analytics</div>
-          </div>
-        </div>
-        <button onClick={() => { localStorage.removeItem('token'); navigate('/login'); }} className="absolute right-8 top-1/2 -translate-y-1/2 text-base text-[var(--primary-purple)] border border-[var(--primary-purple)] px-5 py-2 rounded font-bold">LOG OUT</button>
-      </header>
+      <Header />
       <div className="flex flex-1 min-h-0 h-0" style={{minHeight: '0', height: '100%'}}>
-        {/* Sidebar */}
-        <nav className="w-64 bg-[var(--primary-purple)] text-white flex flex-col px-6 py-6 overflow-y-auto flex-shrink-0 h-screen min-h-screen">
-          <ul className="flex flex-col gap-5">
-            <li><button className="w-full flex items-center gap-3 px-5 py-4 rounded-xl bg-white/10 hover:bg-white/20 transition font-bold text-lg tracking-wide" onClick={()=>navigate('/dashboard')}><i className="fa-solid fa-paw text-2xl" />ANIMALS</button></li>
-            <li><button className="w-full flex items-center gap-3 px-5 py-4 rounded-xl bg-white/10 hover:bg-white/20 transition font-bold text-lg tracking-wide" onClick={()=>navigate('/analysis')}><i className="fa-solid fa-chart-simple text-2xl" />ANALYSIS</button></li>
-            <li><button className="w-full flex items-center gap-3 px-5 py-4 rounded-xl bg-white/10 hover:bg-white/20 transition font-bold text-lg tracking-wide" onClick={()=>navigate('/notifications')}><i className="fa-solid fa-bell text-2xl" />NOTIFICATION</button></li>
-            <li className="mt-auto"><button className="w-full flex items-center gap-3 px-5 py-4 rounded-xl bg-white/10 hover:bg-white/20 transition font-bold text-lg tracking-wide" onClick={()=>navigate('/settings')}><i className="fa-solid fa-gears text-2xl" />SETTINGS</button></li>
-          </ul>
-        </nav>
+        <Sidebar />
         {/* Main content */}
         <main className="flex-1 flex flex-row gap-0 items-start justify-center py-16 px-8">
           {/* Left: Pet profile */}
